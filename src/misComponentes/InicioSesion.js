@@ -112,7 +112,7 @@ class InicioSesion extends React.Component {
           <div className="row">
             <div id="login" className="col">
               <h2 className="text-center">Bienvenid@</h2>
-              <img src={user_im} className="img-fluid mx-auto d-block rounded" alt="" />
+              <img src={user_im}  className="img-fluid mx-auto d-block rounded" alt="" />
 
               <form>
                 <div className="form-group">

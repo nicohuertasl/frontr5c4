@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ProductosService } from '../service/ProductosService';
-import {DataTable} from 'primereact/datatable' 
+import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
 import { Menubar } from 'primereact/menubar';
@@ -17,78 +17,93 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
-export default class ProductosCRUD extends Component{
-  constructor(){
+export default class ProductosCRUD extends Component {
+  constructor() {
     super();
-    this.state ={visible:false,
+    this.state = {
+      visible: false,
       producto: {
-        id:"",
-        brand:"",
-        category:"",
-        name:"",
-        description:"",
-        price:"",
-        availability:true,
-        quantity:"",
-        photography:""},
+        id: "",
+        brand: "",
+        category: "",
+        name: "",
+        description: "",
+        price: "",
+        availability: true,
+        quantity: "",
+        photography: ""
+      },
 
-        selectedProducto:{
+      selectedProducto: {
 
-        },
-        categorias:[]
-      };
-    this.items=[
+      },
+      categorias: []
+    };
+
+    // === ITEMS OF MENU ===
+    this.items = [
       {
-        label:'Nuevo',
-        icon:'pi pi-fw pi-file',
-        command : () => {this.mostrarDialog()}
+        label: 'Nuevo',
+        icon: 'pi pi-fw pi-file',
+        command: () => { this.mostrarDialog() }
       },
       {
-        label:'Editar',
-        icon:'pi pi-fw pi-pencil',
-        command : () => {this.mostrarDialogEditar()}
+        label: 'Editar',
+        icon: 'pi pi-fw pi-pencil',
+        command: () => { this.mostrarDialogEditar() }
       },
       {
-        label:'Borrar',
-        icon:'pi pi-fw pi-trash',
-        command : () => {this.delete()}
-      }
+        label: 'Borrar',
+        icon: 'pi pi-fw pi-trash',
+        command: () => { this.delete() }
+      },
+      {
+        label:'Precio',
+        icon:'pi pi-fw pi-power-off'
+     }
+     
     ];
 
-    this.productosService= new ProductosService();
-    this.save=this.save.bind(this);
-    this.delete=this.delete.bind(this);
+    this.productosService = new ProductosService();
+    //  bind para que el this de la funcion se refiera al componente
+    this.save = this.save.bind(this);
+    this.delete = this.delete.bind(this);
 
-    this.footer=(
+
+
+// === FOOTER, BOTON====================
+
+
+    this.footer = (
       <div>
         <Button label="Guardar" icon="pi pi-check" onClick={this.save} />
       </div>
     );
-    
+
 
   }
 
-  componentDidMount(){
-    this.productosService.getAll().then(data => this.setState({productos : data}));
+  componentDidMount() {
+    this.productosService.getAll().then(data => this.setState({ productos: data }));
     //this.productosService.getCategorys().then(data => this.setState({categorias : data}));
     //console.log(this.state.productos);
   }
 
-  save(){
-      //console.log(this.state.producto);
+  save() {
+    //console.log(this.state.producto);
     this.productosService.save(this.state.producto).then(data => {
       this.setState({
-        visible:false,
+        visible: false,
         producto: {
-          id:"",
-          brand:"",
-          category:"",
-          name:"",
-          description:"",
-          price:"",
-          availability:true,
-          quantity:"",
-          photography:""
+          id: "",
+          brand: "",
+          category: "",
+          name: "",
+          description: "",
+          price: "",
+          availability: true,
+          quantity: "",
+          photography: ""
         }
       });
       toast('Producto Guardado', {
@@ -99,15 +114,14 @@ export default class ProductosCRUD extends Component{
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-    });
-      this.productosService.getAll().then(data => this.setState({productos : data}));
+      });
+      this.productosService.getAll().then(data => this.setState({ productos: data }));
     })
-    
+
   }
 
-  delete(){
-    if(window.confirm("Realmente desea eliminar el registro?"))
-    {
+  delete() {
+    if (window.confirm("Realmente desea eliminar el registro?")) {
       this.productosService.delete(this.state.selectedProducto.id).then(data => {
         toast('Producto Eliminado', {
           position: "top-left",
@@ -117,176 +131,310 @@ export default class ProductosCRUD extends Component{
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-      });
-        this.productosService.getAll().then(data => this.setState({productos : data}));
+        });
+        this.productosService.getAll().then(data => this.setState({ productos: data }));
 
       })
     }
   }
+ 
 
-  render(){
-    return(
-      <div style={{width:'80%'}}>
-        <Menubar model={this.items}/>
-         <Panel header="CRUD productos" >
-        <DataTable value={this.state.productos} paginator={true} rows="8" selectionMode="single" selection={this.state.selectedProducto} onSelectionChange={e => this.setState({ selectedProducto: e.value })} dataKey="id" responsiveLayout="scroll" >
-        <Column field="id" header="ID"></Column>
-        <Column field="category" header="CATEGORIA"></Column>
-        <Column field="name" header="NOMBRE"></Column>
-        <Column field="description" header="DESCRIPCION"></Column>
-        <Column field="price" header="PRECIO"></Column>
-        <Column field="availability" header="DISPONIBLE"></Column>
-        <Column field="quantity" header="CANTIDAD"></Column>
-        <Column field="photography" header="IMAGEN"></Column>
-      </DataTable>
-      </Panel>
+ // this methos search the product by price
+  searchByPrice(event) {
+    let price = event.target.value;
+    this.productosService.getByPrice(price).then(data => this.setState({ productos: data }));
+  }
 
-      <Dialog header="Crear Producto" footer={this.footer} visible={this.state.visible} style={{ width: '60%' }} modal={true}  onHide={() => this.setState({visible:false})}>
-      <br/>
-      <span className="p-float-label">
-          <InputText id="id" value={this.state.producto.id} onChange={(e) => {
-            let val=e.target.value;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
 
-            producto.id=val;
+  render() {
+    return (
+      <div style={{ width: '100%' }}>
 
-            return{producto};
+      {/* LLADO DEL MENU PRICIPAL [Menubar] */}
 
-          })} }/>
-          <label htmlFor="id">IDENTIFICADOR</label>
-      </span>
+        <Menubar model={this.items} end={
+            <InputText placeholder="Search by price"
+            value={this.state.producto.price} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
 
-      <br/>
+                producto.price = val;
 
-      <span className="p-float-label">
-        
-          <label htmlFor="categoria">CATEGORIA</label>
-      </span>
-      <br/>
-      <span className="p-float-label">
-          <InputText id="nombre" value={this.state.producto.nombre} onChange={(e) => {
-            let val=e.target.value;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
+                return { producto };
+               
+              })
+            }
+            
+            }
+             />
+        } />
 
-            producto.nombre=val;
 
-            return{producto};
+        <Panel header="CRUD productos" >
+          <DataTable value={this.state.productos} size="large" paginator={true} rows="8" selectionMode="single" selection={this.state.selectedProducto} onSelectionChange={e => this.setState({ selectedProducto: e.value })} dataKey="id" responsiveLayout="scroll" >
+            <Column field="id" header="ID"></Column>
+            <Column field="brand" header="Marca"></Column>
+            <Column field="category" header="CATEGORIA"></Column>
+            <Column field="name" header="NOMBRE"></Column>
+            <Column field="description" header="DESCRIPCION"></Column>
+            <Column field="price" header="PRECIO"></Column>
+            <Column field="availability" header="DISPONIBLE"></Column>
+            <Column field="quantity" header="CANTIDAD"></Column>
+            <Column field="photography" header="IMAGEN"></Column>
+          </DataTable>
+        </Panel>
 
-          })} }/>
-          <label htmlFor="nombre">NOMBRE</label>
-      </span>
+        <Dialog header="Crear Producto" footer={this.footer} visible={this.state.visible} style={{ width: '60%' }} modal={true} onHide={() => this.setState({ visible: false })}>
+          <br />
 
-      <br/>
-      <span className="p-float-label">
-          <InputText id="descripcion" value={this.state.producto.descripcion} onChange={(e) => {
-            let val=e.target.value;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
-
-            producto.descripcion=val;
-
-            return{producto};
-
-          })} }/>
-          <label htmlFor="descripcion">DESCRIPCION</label>
-      </span>
-      <br/>
-      <span className="p-float-label">
-          <InputNumber id="precio" placeholder="PRECIO" value={this.state.producto.precio} onValueChange={(e) => {
-            let val=e.target.value;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
-
-            producto.precio=val;
-
-            return{producto};
-
-          })} }/>
-          <label htmlFor="precio">PRECIO</label>
-      </span>
-        <br/>
-        <Checkbox id="disponibilidad" onChange={(e) => {
-            let val=e.target.checked;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
-
-            producto.disponibilidad=val;
-
-            return{producto};
-
-          })}} checked={this.state.producto.disponibilidad}></Checkbox>Disponibilidad
-
-          <br/> <br/>
+          {/* INPUT FIELD ID */}
 
           <span className="p-float-label">
-          <InputNumber id="cantidad" placeholder="CANTIDAD" value={this.state.producto.cantidad} onValueChange={(e) => {
-            let val=e.target.value;
+            <label htmlFor="id">Identification</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+            <InputText id="id" placeholder='1213' value={this.state.producto.id} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.id = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+
+          <br />
+
+          <span className="p-float-label">
+            <label htmlFor="brand">Marca</label>
+          </span>
+          <br />
+
+          {/* INPUT FIELD BRAND */}
+
+
+          <span className="p-float-label">
+            <InputText id="brand" placeholder='mi marca' value={this.state.producto.brand} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.brand = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+
+          <br />
+
+
+
+          {/******* INPUT FIELD  CATEGORIA*/}
+          <span className="p-float-label">
+            <label htmlFor="category">Categoria</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+
+            <InputText id="category" placeholder='Detergente' value={this.state.producto.category} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.category = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+          <br />
+
+          {/* ****************************INPUT NAME****************** */}
+          <span className="p-float-label">
+            <label htmlFor="name">Nombre</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+
+            <InputText id="name" placeholder='Nicolas Huertas' value={this.state.producto.name} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.name = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+          <br />
+
+
+
+          {/**============== INPUT FIELD DESCRIPCION */}
+
+
+          <span className="p-float-label">
+            <label htmlFor="description">Descripcion</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+
+            <InputText id="description" placeholder='Una descripcion corta del prodcucto' value={this.state.producto.description} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.description = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+          <br />
+
+          {/**============== INPUT FIELD PRECIO */}
+
+          <span className="p-float-label">
+            <label htmlFor="price">Precio</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+            <InputNumber id="price" placeholder="1500 $" value={this.state.producto.price} onValueChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.price = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+          <br />
+
+
+          {/* ====================== INPUT FIELD DISPONIBLE */}
+
+          <span className="p-float-label">
+            <label htmlFor="availability">Disponibilidad</label>
+          </span>
+          <br />
+          <Checkbox id="availability" onChange={(e) => {
+            let val = e.target.checked;
             this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
+              let producto = Object.assign({}, prevState.producto);
 
-            producto.cantidad=val;
+              producto.availability = val;
 
-            return{producto};
+              return { producto };
 
-          })}} />
-          <label htmlFor="cantidad">CANTIDAD</label>
-      </span>
+            })
+          }} checked={this.state.producto.availability}></Checkbox>
 
-      <br/>
-      <span className="p-float-label">
-          <InputText id="imagen" value={this.state.producto.imagen} onChange={(e) => {
-            let val=e.target.value;
-            this.setState(prevState => {
-            let producto=Object.assign({},prevState.producto);
+          <br />
+          <br />
+          {/* =========== INPUT FIELD CANTIDAD======= */}
 
-            producto.imagen=val;
+          <span className="p-float-label">
+            <label htmlFor="quantity">Cantidad</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+            <InputNumber id="quantity" placeholder="5" value={this.state.producto.quantity} onValueChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
 
-            return{producto};
+                producto.quantity = val;
 
-          })}} />
-          <label htmlFor="imagen">IMAGEN</label>
-      </span>
-          
-      </Dialog>
+                return { producto };
 
-      <ToastContainer></ToastContainer>
+              })
+            }} />
+
+          </span>
+          {/* ===============INPUT FIELD FOTOGRAFIA=========== */}
+          <br />
+
+          <span className="p-float-label">
+            <label htmlFor="quantity">URL Fotografia</label>
+          </span>
+          <br />
+          <span className="p-float-label">
+            <InputText id="photography" value={this.state.producto.photography} onChange={(e) => {
+              let val = e.target.value;
+              this.setState(prevState => {
+                let producto = Object.assign({}, prevState.producto);
+
+                producto.photography = val;
+
+                return { producto };
+
+              })
+            }} />
+
+          </span>
+
+        </Dialog>
+
+        <ToastContainer></ToastContainer>
 
       </div>
 
-      
+
     );
   }
 
-  mostrarDialog(){
+  mostrarDialog() {
     this.setState({
-      visible:true,
+      visible: true,
       producto: {
-        id:"",
-        categoria:"",
-        nombre:"",
-        descripcion:"",
-        precio:"",
-        disponibilidad:true,
-        cantidad:"",
-        imagen:""}
+        id: "",
+        brand: "",
+        category: "",
+        name: "",
+        description: "",
+        price: "",
+        availability: true,
+        quantity: "",
+        photography: ""
+      }
     });
   }
 
-  mostrarDialogEditar()
-  {
+  mostrarDialogEditar() {
     this.setState({
-      visible:true,
+      visible: true,
       producto: {
-        id:this.state.selectedProducto.id,
-        categoria:this.state.selectedProducto.categoria,
-        nombre:this.state.selectedProducto.nombre,
-        descripcion:this.state.selectedProducto.descripcion,
-        precio:this.state.selectedProducto.precio,
-        disponibilidad:this.state.selectedProducto.disponibilidad,
-        cantidad:this.state.selectedProducto.cantidad,
-        imagen:this.state.selectedProducto.imagen}
-    }); 
+        id: this.state.selectedProducto.id,
+        brand: this.state.selectedProducto.brand,
+        nombre: this.state.selectedProducto.nombre,
+        category: this.state.selectedProducto.category,
+        name: this.state.selectedProducto.name,
+        description: this.state.selectedProducto.description,
+        price: this.state.selectedProducto.price,
+        availability: this.state.selectedProducto.availability,
+        quantity: this.state.selectedProducto.quantity,
+        photography: this.state.selectedProducto.photography
+      }
+    });
   }
 }

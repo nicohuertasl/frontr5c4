@@ -3,7 +3,6 @@ import UsuariosCRUD from './UsuariosCRUD';
 import ProductosCRUD from "./ProductosCRUD";
 
 
-
 class MenuPrincipal extends React.Component{
   state={
     showUsers:true,
@@ -11,9 +10,15 @@ class MenuPrincipal extends React.Component{
 
   }// fin state
 
+
+
+
+ 
+  
   menuPpal=(
+    
     <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-primary" onClick={()=>{this.setState({showUsers:true,showProducts:false})}}>Usuarios</button>
+              <button type="button" className="btn btn-primary" onClick={()=>{this.setState({showUsers:true,showProducts:false})}}>Users</button>
               <button type="button" className="btn btn-primary" onClick={()=>{this.setState({showUsers:false,showProducts:true})}}>Productos</button>
               <button type="button" className="btn btn-primary">Cerrar Sesión</button>
           </div>
@@ -24,6 +29,7 @@ class MenuPrincipal extends React.Component{
       if(this.state.showUsers)
       {
         return(
+          
         <div className="container">
             <div className="row">
               <div className="col">
@@ -31,6 +37,7 @@ class MenuPrincipal extends React.Component{
           </div>
           <div className="row">
               <div className="col">
+               
                  <UsuariosCRUD />
                  
               </div>
@@ -50,6 +57,7 @@ class MenuPrincipal extends React.Component{
           <div className="row">
               <div className="col">
                      <ProductosCRUD />
+                  
               </div>
           </div>  
 

@@ -49,8 +49,8 @@ class UsuariosCRUD extends React.Component {
     //*****   items del menu */
     this.items = [
       {
-        label:   'Nuevo',
-        icon:    'pi pi-fw pi-file',
+        label: 'Nuevo',
+        icon: 'pi pi-fw pi-file',
         command: () => { this.mostrarDialog() }
       },
       {
@@ -62,11 +62,6 @@ class UsuariosCRUD extends React.Component {
         label: 'Borrar',
         icon: 'pi pi-fw pi-trash',
         command: () => { this.delete() }
-      },
-      {
-        label: 'Imprimir',
-        icon: 'pi pi-fw pi-print',
-        command: () => { this.exportPdf("panelPersonas") }
       }
     ];
 
@@ -163,24 +158,24 @@ class UsuariosCRUD extends React.Component {
         <Panel header="CRUD Personas" id="panelPersonas">
           <DataTable value={this.state.personas} paginator={true} rows="8" selectionMode="single" selection={this.state.selectedPersona} onSelectionChange={e => this.setState({ selectedPersona: e.value })} dataKey="id" responsiveLayout="scroll" >
             <Column field="id" header="ID"></Column>
-            <Column field="identification" header="c1"></Column>
-            <Column field="name" header="EDAD"></Column>
-            <Column field="birthtDay" header="NOMBRE"></Column>
-            <Column field="monthBirthtDay" header="CLAVE"></Column>
+            <Column field="identification" header="Cedula"></Column>
+            <Column field="name" header="Nombre"></Column>
+            <Column field="birthtDay" header="Fecha de  Nacimiento"></Column>
+            <Column field="monthBirthtDay" header="Mes Nacimiento"></Column>
 
-            <Column field="address" header="c1"></Column>
-            <Column field="cellPhone" header="EDAD"></Column>
-            <Column field="email" header="NOMBRE"></Column>
-            <Column field="password" header="CLAVE"></Column>
+            <Column field="address" header="Dirección"></Column>
+            <Column field="cellPhone" header="Celular"></Column>
+            <Column field="email" header="Correo"></Column>
+            <Column field="password" header="Contraseña"></Column>
 
-            <Column field="zone" header="NOMBRE"></Column>
-            <Column field="type" header="CLAVE"></Column>
+            <Column field="zone" header="Zona"></Column>
+            <Column field="type" header="Tipo"></Column>
 
           </DataTable>
 
         </Panel>
 
-
+        {/* Ventanas de dialogo */}
         <Dialog header="Crear Persona" footer={this.footer} visible={this.state.visible} style={{ width: '60%' }} modal={true} onHide={() => this.setState({ visible: false })}>
           <br />
           <span className="p-float-label">
@@ -243,7 +238,7 @@ class UsuariosCRUD extends React.Component {
 
               })
             }} />
-            <label htmlFor="birthtDay">NACE</label>
+            <label htmlFor="birthtDay">Fecha de Nacimiento</label>
           </span>
 
           <br />
@@ -259,7 +254,7 @@ class UsuariosCRUD extends React.Component {
 
               })
             }} />
-            <label htmlFor="monthBirthtDay">CUMPLE</label>
+            <label htmlFor="monthBirthtDay">Mes cumpleaños</label>
           </span>
           <br />
 
