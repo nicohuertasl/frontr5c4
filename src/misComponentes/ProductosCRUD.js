@@ -23,13 +23,14 @@ export default class ProductosCRUD extends Component{
     this.state ={visible:false,
       producto: {
         id:"",
-        categoria:"",
-        nombre:"",
-        descripcion:"",
-        precio:"",
-        disponibilidad:true,
-        cantidad:"",
-        imagen:""},
+        brand:"",
+        category:"",
+        name:"",
+        description:"",
+        price:"",
+        availability:true,
+        quantity:"",
+        photography:""},
 
         selectedProducto:{
 
@@ -80,13 +81,15 @@ export default class ProductosCRUD extends Component{
         visible:false,
         producto: {
           id:"",
-          categoria:"",
-          nombre:"",
-          descripcion:"",
-          precio:"",
-          disponibilidad:true,
-          cantidad:"",
-          imagen:""}
+          brand:"",
+          category:"",
+          name:"",
+          description:"",
+          price:"",
+          availability:true,
+          quantity:"",
+          photography:""
+        }
       });
       toast('Producto Guardado', {
         position: "top-left",
@@ -128,13 +131,13 @@ export default class ProductosCRUD extends Component{
          <Panel header="CRUD productos" >
         <DataTable value={this.state.productos} paginator={true} rows="8" selectionMode="single" selection={this.state.selectedProducto} onSelectionChange={e => this.setState({ selectedProducto: e.value })} dataKey="id" responsiveLayout="scroll" >
         <Column field="id" header="ID"></Column>
-        <Column field="categoria" header="CATEGORIA"></Column>
-        <Column field="nombre" header="NOMBRE"></Column>
-        <Column field="descripcion" header="DESCRIPCION"></Column>
-        <Column field="precio" header="PRECIO"></Column>
-        <Column field="disponibilidad" header="DISPONIBLE"></Column>
-        <Column field="cantidad" header="CANTIDAD"></Column>
-        <Column field="imagen" header="IMAGEN"></Column>
+        <Column field="category" header="CATEGORIA"></Column>
+        <Column field="name" header="NOMBRE"></Column>
+        <Column field="description" header="DESCRIPCION"></Column>
+        <Column field="price" header="PRECIO"></Column>
+        <Column field="availability" header="DISPONIBLE"></Column>
+        <Column field="quantity" header="CANTIDAD"></Column>
+        <Column field="photography" header="IMAGEN"></Column>
       </DataTable>
       </Panel>
 
