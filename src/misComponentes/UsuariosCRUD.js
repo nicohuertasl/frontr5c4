@@ -70,6 +70,7 @@ class UsuariosCRUD extends React.Component {
     this.PersonaService = new PersonaService();
     this.save = this.save.bind(this);
     this.delete = this.delete.bind(this);
+    //this.searchByMonthBirthtDay = this.searchByMonthBirthtDay.bind(this);
 
     this.footer = (
       <div>
@@ -137,6 +138,11 @@ class UsuariosCRUD extends React.Component {
   }
 
 
+  // This method seach by monthBirthtDay
+  searchByMonthBirthtDay(event) {
+    this.PersonaService.getByBirthday(event.target.value).then(data => this.setState({ personas: data }));
+  }
+
   /* exportPdf (div){
 
      html2canvas(document.querySelector("#"+div)).then(canvas => {
@@ -154,7 +160,31 @@ class UsuariosCRUD extends React.Component {
 
     return (
       <>
-        <Menubar model={this.items} />
+        <Menubar model={this.items} 
+    end={
+            <>
+              <label htmlFor='searchMonth'>Buscar por Mes</label>
+              <InputText id='searchMonth' placeholder="Ingrese numeo mes"
+                value={this.state.persona.monthBirthtDay} onChange={(e) => {
+                  let val = e.target.value;
+                  this.searchByMonthBirthtDay(e);
+                  this.setState(prevState => {
+                    let persona = Object.assign({}, prevState.persona);
+                    persona.monthBirthtDay = val;
+                    return { persona };
+                  }
+                  )// end setState
+                }
+
+                }
+              />
+            </> 
+          } 
+            
+          />
+
+
+        
         <Panel header="CRUD Personas" id="panelPersonas">
           <DataTable value={this.state.personas} paginator={true} rows="8" selectionMode="single" selection={this.state.selectedPersona} onSelectionChange={e => this.setState({ selectedPersona: e.value })} dataKey="id" responsiveLayout="scroll" >
             <Column field="id" header="ID"></Column>

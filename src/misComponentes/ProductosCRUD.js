@@ -56,22 +56,20 @@ export default class ProductosCRUD extends Component {
         label: 'Borrar',
         icon: 'pi pi-fw pi-trash',
         command: () => { this.delete() }
-      },
-      {
-        label:'Precio',
-        icon:'pi pi-fw pi-power-off'
-     }
-     
+      }
+
     ];
 
     this.productosService = new ProductosService();
     //  bind para que el this de la funcion se refiera al componente
     this.save = this.save.bind(this);
     this.delete = this.delete.bind(this);
+    this.searchByPrice = this.searchByPrice.bind(this);
+    this.searchByDescription = this.searchByDescription.bind(this);
 
 
 
-// === FOOTER, BOTON====================
+    // === FOOTER, BOTON====================
 
 
     this.footer = (
@@ -137,12 +135,19 @@ export default class ProductosCRUD extends Component {
       })
     }
   }
- 
 
- // this methos search the product by price
+
+  // this methos search the product by price
   searchByPrice(event) {
     let price = event.target.value;
     this.productosService.getByPrice(price).then(data => this.setState({ productos: data }));
+
+  }
+  
+  // this method search the product by description
+  searchByDescription(event) {
+    let description = event.target.value;
+    this.productosService.getByDescription(description).then(data => this.setState({ productos: data }));
   }
 
 
@@ -150,25 +155,53 @@ export default class ProductosCRUD extends Component {
     return (
       <div style={{ width: '100%' }}>
 
-      {/* LLADO DEL MENU PRICIPAL [Menubar] */}
+        {/* LLADO DEL MENU PRICIPAL [Menubar] */}
 
-        <Menubar model={this.items} end={
-            <InputText placeholder="Search by price"
-            value={this.state.producto.price} onChange={(e) => {
-              let val = e.target.value;
-              this.setState(prevState => {
-                let producto = Object.assign({}, prevState.producto);
+        <Menubar model={this.items}
+          start={
+          <>
+            <label htmlFor='searchDes'>Buscar por descripcion</label>
+            <InputText id='searchDes' placeholder="Search by descripcion"
+              value={this.state.producto.description} onChange={(e) => {
+                let val = e.target.value;
+                this.searchByDescription(e);
+                this.setState(prevState => {
+                  let producto = Object.assign({}, prevState.producto);
 
-                producto.price = val;
+                  producto.description = val;
 
-                return { producto };
-               
-              })
-            }
+                  return { producto };
+
+                }
+                )// end setState
+              }
+
+              }
+            />
+          </>
+          } // end start
+          
+           end={
+            <>
+              <label htmlFor='searchPrice'>Buscar por precio</label>
+              <InputText id='searchPrice' placeholder="Search by price"
+                value={this.state.producto.price} onChange={(e) => {
+                  let val = e.target.value;
+                  this.searchByPrice(e);
+                  this.setState(prevState => {
+                    let producto = Object.assign({}, prevState.producto);
+                    producto.price = val;
+                    return { producto };
+                  }
+                  )// end setState
+                }
+
+                }
+              />
+            </> 
+          } 
             
-            }
-             />
-        } />
+          />
 
 
         <Panel header="CRUD productos" >

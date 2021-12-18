@@ -17,6 +17,11 @@ export class PersonaService{
         return axios.delete(this.baseUrl + id).then(res => res.data);
     }
 
+    // this method is used to get the persona by birthday
+    getByBirthday(birthday){
+        return axios.get(this.baseUrl + "birthday/" + birthday).then(res => res.data);
+    }
+
     /*getMail(mail){
         //console.log(this.baseUrl+ "mail/" + mail);
         return axios.get(this.baseUrl+ "mail/" + mail).then(res => res.data);
